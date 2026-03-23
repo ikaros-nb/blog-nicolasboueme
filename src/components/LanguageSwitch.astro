@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { type Locale, defaultLocale } from "@/i18n/translations";
+import { getLocalizedPath } from "@/i18n/utils";
+import { getPath } from "@/utils/getPath";
+
+type Props = {
+  lang?: Locale;
+  post?: CollectionEntry<"blog">;
+  allPosts?: CollectionEntry<"blog">[];
+};
+
+const { lang = defaultLocale, post, allPosts } = Astro.props;
+const otherLang: Locale = lang === "en" ? "fr" : "en";
+
+let switchHref: string;
+
+if (post && allPosts && post.data.translationKey) {
+  // On a post page with a translationKey, try to find its translation
+  const translation = allPosts.find(
+    p =>
+      p.data.translationKey === post.data.translationKey &&
+      p.data.lang === otherLang
+  );
+  if (translation) {
+    switchHref = getPath(translation.id, translation.filePath, true, otherLang);
+  } else {
+    // No translation found, link to posts list
+    switchHref = getLocalizedPath("/posts/", otherLang);
+  }
+} else if (post) {
+  // On a post page without translationKey, link to posts list
+  switchHref = getLocalizedPath("/posts/", otherLang);
+} else {
+  // On any other page, swap the language prefix
+  let currentPath = Astro.url.pathname;
+  // Remove trailing slash
+  if (currentPath.endsWith("/") && currentPath !== "/") {
+    currentPath = currentPath.slice(0, -1);
+  }
+  // Strip current lang prefix if present
+  if (lang !== defaultLocale) {
+    currentPath = currentPath.replace(new RegExp(`^/${lang}`), "") || "/";
+  }
+  switchHref = getLocalizedPath(currentPath, otherLang);
+}
+
+const label = otherLang.toUpperCase();
+---
+
+<a
+  href={switchHref}
+  class="focus-outline p-3 text-sm font-semibold sm:p-1 hover:text-accent"
+  aria-label={`Switch to ${otherLang === "en" ? "English" : "Fran\u00E7ais"}`}
+>
+  {label}
+</a>

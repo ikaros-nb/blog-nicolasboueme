@@ -1,15 +1,42 @@
 ---
+import { type Locale, defaultLocale, t } from "@/i18n/translations";
+import { getLocalizedPath } from "@/i18n/utils";
+
+type Props = {
+  lang?: Locale;
+};
+
+const { lang = defaultLocale } = Astro.props;
+
 // Remove current url path and remove trailing slash if exists
-const currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
+let currentUrlPath = Astro.url.pathname.replace(/\/+$/, "");
+
+// Strip lang prefix for breadcrumb generation
+if (lang !== defaultLocale) {
+  currentUrlPath = currentUrlPath.replace(new RegExp(`^/${lang}`), "");
+}
 
 // Get url array from path
 // eg: /tags/tailwindcss => ['tags', 'tailwindcss']
 const breadcrumbList = currentUrlPath.split("/").slice(1);
 
+// Translate breadcrumb segment
+function translateSegment(segment: string): string {
+  const key = `breadcrumb.${segment}`;
+  const translated = t(lang, key);
+  // If no translation found, return original
+  return translated === key ? segment : translated;
+}
+
 // if breadcrumb is Home > Posts > 1 <etc>
 // replace Posts with Posts (page number)
 if (breadcrumbList[0] === "posts") {
-  breadcrumbList.splice(0, 2, `Posts (page ${breadcrumbList[1] || 1})`);
+  const pageNum = breadcrumbList[1] || 1;
+  breadcrumbList.splice(
+    0,
+    2,
+    `${translateSegment("posts")} (page ${pageNum})`
+  );
 }
 
 // if breadcrumb is Home > Tags > [tag] > [page] <etc>
@@ -28,7 +55,9 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
     class="font-light [&>li]:inline [&>li:not(:last-child)>a]:hover:opacity-100"
   >
     <li>
-      <a href="/" class="opacity-80">Home</a>
+      <a href={getLocalizedPath("/", lang)} class="opacity-80"
+        >{t(lang, "breadcrumb.home")}</a
+      >
       <span aria-hidden="true" class="opacity-80">&raquo;</span>
     </li>
     {
@@ -45,8 +74,11 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
           </li>
         ) : (
           <li>
-            <a href={`/${breadcrumb}/`} class="capitalize opacity-70">
-              {breadcrumb}
+            <a
+              href={getLocalizedPath(`/${breadcrumb}/`, lang)}
+              class="capitalize opacity-70"
+            >
+              {translateSegment(breadcrumb)}
             </a>
             <span aria-hidden="true">&raquo;</span>
           </li>

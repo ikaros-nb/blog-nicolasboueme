@@ -14,13 +14,16 @@ import { slugifyStr } from "@/utils/slugify";
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 import { SITE } from "@/config";
+import { type Locale, defaultLocale, t } from "@/i18n/translations";
 
 type Props = {
   post: CollectionEntry<"blog">;
   posts: CollectionEntry<"blog">[];
+  lang?: Locale;
+  allPosts?: CollectionEntry<"blog">[];
 };
 
-const { post, posts } = Astro.props;
+const { post, posts, lang = defaultLocale, allPosts } = Astro.props;
 
 const {
   title,
@@ -48,7 +51,7 @@ if (typeof initOgImage === "string") {
 
 // Use dynamic OG image if enabled and no remote|local ogImage
 if (!ogImageUrl && SITE.dynamicOgImage) {
-  ogImageUrl = `${getPath(post.id, post.filePath)}/index.png`;
+  ogImageUrl = `${getPath(post.id, post.filePath, true, lang)}/index.png`;
 }
 
 // Resolve OG image URL (or fallback to SITE.ogImage / default `og.png`)
@@ -65,30 +68,32 @@ const layoutProps = {
   canonicalURL,
   ogImage,
   scrollSmooth: true,
+  lang,
 };
 
 /* ========== Prev/Next Posts ========== */
 
-const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
+const allPostsFlat = posts.map(({ data: { title }, id, filePath }) => ({
   id,
   title,
   filePath,
 }));
 
-const currentPostIndex = allPosts.findIndex(a => a.id === post.id);
+const currentPostIndex = allPostsFlat.findIndex(a => a.id === post.id);
 
-const prevPost = currentPostIndex !== 0 ? allPosts[currentPostIndex - 1] : null;
+const prevPost = currentPostIndex !== 0 ? allPostsFlat[currentPostIndex - 1] : null;
 const nextPost =
-  currentPostIndex !== allPosts.length ? allPosts[currentPostIndex + 1] : null;
+  currentPostIndex !== allPostsFlat.length ? allPostsFlat[currentPostIndex + 1] : null;
 ---
 
 <Layout {...layoutProps}>
-  <Header />
-  <BackButton />
+  <Header {lang} post={post} allPosts={allPosts} />
+  <BackButton {lang} />
   <main
     id="main-content"
     class:list={["app-layout pb-12", { "mt-8": !SITE.showBackButton }]}
     data-pagefind-body
+    data-pagefind-filter-lang={lang}
   >
     <h1
       transition:name={slugifyStr(title.replaceAll(".", "-"))}
@@ -119,12 +124,12 @@ const nextPost =
     <EditPost class="sm:hidden" {hideEditPost} {post} />
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
+      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" {lang} />)}
     </ul>
 
     <BackToTopButton />
 
-    <ShareLinks />
+    <ShareLinks {lang} />
 
     <hr class="my-6 border-dashed" />
 
@@ -133,12 +138,12 @@ const nextPost =
       {
         prevPost && (
           <a
-            href={getPath(prevPost.id, prevPost.filePath)}
+            href={getPath(prevPost.id, prevPost.filePath, true, lang)}
             class="flex w-full gap-1 hover:opacity-75"
           >
             <IconChevronLeft class="inline-block flex-none rtl:rotate-180" />
             <div>
-              <span>Previous Post</span>
+              <span>{t(lang, "post.previous")}</span>
               <div class="text-sm text-accent/85">{prevPost.title}</div>
             </div>
           </a>
@@ -147,11 +152,11 @@ const nextPost =
       {
         nextPost && (
           <a
-            href={getPath(nextPost.id, nextPost.filePath)}
+            href={getPath(nextPost.id, nextPost.filePath, true, lang)}
             class="flex w-full justify-end gap-1 text-end hover:opacity-75 sm:col-start-2"
           >
             <div>
-              <span>Next Post</span>
+              <span>{t(lang, "post.next")}</span>
               <div class="text-sm text-accent/85">{nextPost.title}</div>
             </div>
             <IconChevronRight class="inline-block flex-none rtl:rotate-180" />
@@ -160,7 +165,7 @@ const nextPost =
       }
     </div>
   </main>
-  <Footer />
+  <Footer {lang} />
 </Layout>
 
 <script is:inline data-astro-rerun>

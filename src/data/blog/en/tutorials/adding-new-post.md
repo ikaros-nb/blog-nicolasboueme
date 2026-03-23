@@ -11,6 +11,7 @@ tags:
 description:
   Some rules & recommendations for creating or adding new posts using AstroPaperr
   theme.
+lang: "fr"
 ---
 
 Here are some rules/recommendations, tips & ticks for creating new posts in AstroPaper blog theme.

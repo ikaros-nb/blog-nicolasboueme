@@ -11,11 +11,11 @@ import getSortedPosts from "@/utils/getSortedPosts";
 import { SITE } from "@/config";
 import { t } from "@/i18n/translations";
 
-const lang = "en" as const;
+const lang = "fr" as const;
 
 export const getStaticPaths = (async ({ paginate }) => {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return paginate(getSortedPosts(posts, "en"), { pageSize: SITE.postPerPage });
+  return paginate(getSortedPosts(posts, "fr"), { pageSize: SITE.postPerPage });
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;

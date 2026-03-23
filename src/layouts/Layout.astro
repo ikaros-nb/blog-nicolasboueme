@@ -3,6 +3,8 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
+import { type Locale, defaultLocale } from "@/i18n/translations";
+import { getLocalizedPath } from "@/i18n/utils";
 import "@/styles/global.css";
 
 type Props = {
@@ -15,6 +17,7 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  lang?: Locale;
 };
 
 const {
@@ -27,6 +30,7 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  lang = defaultLocale,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -46,12 +50,23 @@ const structuredData = {
     },
   ],
 };
+
+const otherLang: Locale = lang === "en" ? "fr" : "en";
+const rssPath = lang === defaultLocale ? "/rss.xml" : `/${lang}/rss.xml`;
+const enUrl = new URL(
+  lang === "en" ? Astro.url.pathname : Astro.url.pathname.replace(/^\/fr/, "") || "/",
+  Astro.url
+);
+const frUrl = new URL(
+  lang === "fr" ? Astro.url.pathname : `/fr${Astro.url.pathname}`,
+  Astro.url
+);
 ---
 
 <!doctype html>
 <html
   dir={SITE.dir}
-  lang=`${SITE.lang ?? "en"}`
+  lang={lang}
   class={`${scrollSmooth && "scroll-smooth"}`}
 >
   <head>
@@ -74,11 +89,17 @@ const structuredData = {
     <meta name="author" content={author} />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
+    <!-- Hreflang alternates -->
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="fr" href={frUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={socialImageURL} />
+    <meta property="og:locale" content={lang === "fr" ? "fr_FR" : "en_US"} />
 
     <!-- Article Published/Modified time -->
     {
@@ -118,7 +139,7 @@ const structuredData = {
       rel="alternate"
       type="application/rss+xml"
       title={SITE.title}
-      href={new URL("rss.xml", Astro.site)}
+      href={new URL(rssPath, Astro.site)}
     />
 
     <meta name="theme-color" content="" />

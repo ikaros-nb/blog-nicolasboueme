@@ -7,9 +7,9 @@ import Footer from "@/components/Footer.astro";
 import { SITE } from "@/config";
 import { t } from "@/i18n/translations";
 
-const lang = "en" as const;
+const lang = "fr" as const;
 
-const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
+const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/fr/";
 ---
 
 <Layout title={`${t(lang, "search.title")} | ${SITE.title}`} {lang}>
@@ -46,11 +46,11 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
       // @ts-expect-error — Missing types for @pagefind/default-ui package.
       const { PagefindUI } = await import("@pagefind/default-ui");
 
-      // Display warning inn dev mode
+      // Display warning in dev mode
       if (import.meta.env.DEV) {
         pageFindSearch.innerHTML = `
             <div class="bg-muted/75 rounded p-4 space-y-4 mb-4">
-              <p><strong>DEV mode Warning! </strong>You need to build the project at least once to see the search results during development.</p>
+              <p><strong>Attention mode DEV ! </strong>Vous devez builder le projet au moins une fois pour voir les résultats de recherche en développement.</p>
               <code class="block bg-black text-white px-2 py-1 rounded">pnpm run build</code>
             </div>
           `;
@@ -63,8 +63,8 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
         showSubResults: true,
         filters: { lang: [searchLang] },
         processTerm: function (term: string) {
-          params.set("q", term); // Update the `q` parameter in the URL
-          history.replaceState(history.state, "", "?" + params.toString()); // Push the new URL without reloading
+          params.set("q", term);
+          history.replaceState(history.state, "", "?" + params.toString());
 
           const backUrl = pageFindSearch?.dataset?.backurl;
           sessionStorage.setItem("backUrl", backUrl + "?" + params.toString());
@@ -73,13 +73,11 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
         },
       });
 
-      // If search param exists (eg: search?q=astro), trigger search
       const query = params.get("q");
       if (query) {
         search.triggerSearch(query);
       }
 
-      // Reset search param if search input is cleared
       const searchInput = document.querySelector(".pagefind-ui__search-input");
       const clearButton = document.querySelector(".pagefind-ui__search-clear");
       searchInput?.addEventListener("input", resetSearchParam);
@@ -95,10 +93,7 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/";
 
   document.addEventListener("astro:after-swap", () => {
     const pagefindSearch = document.querySelector("#pagefind-search");
-
-    // if pagefind search form already exists, don't initialize search component
     if (pagefindSearch && pagefindSearch.querySelector("form")) return;
-
     initSearch();
   });
   initSearch();

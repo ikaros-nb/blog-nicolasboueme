@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import type { Locale } from "@/i18n/translations";
 import { slugifyStr } from "./slugify";
 import postFilter from "./postFilter";
 
@@ -7,9 +8,13 @@ interface Tag {
   tagName: string;
 }
 
-const getUniqueTags = (posts: CollectionEntry<"blog">[]) => {
+const getUniqueTags = (
+  posts: CollectionEntry<"blog">[],
+  lang?: Locale
+) => {
   const tags: Tag[] = posts
     .filter(postFilter)
+    .filter(post => (lang ? post.data.lang === lang : true))
     .flatMap(post => post.data.tags)
     .map(tag => ({ tag: slugifyStr(tag), tagName: tag }))
     .filter(

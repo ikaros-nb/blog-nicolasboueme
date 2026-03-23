@@ -3,19 +3,21 @@ import type { CollectionEntry } from "astro:content";
 import { slugifyStr } from "@/utils/slugify";
 import { getPath } from "@/utils/getPath";
 import Datetime from "./Datetime.astro";
+import { type Locale, defaultLocale } from "@/i18n/translations";
 
 type Props = {
   variant?: "h2" | "h3";
+  lang?: Locale;
 } & CollectionEntry<"blog">;
 
-const { variant: Heading = "h2", id, data, filePath } = Astro.props;
+const { variant: Heading = "h2", lang = defaultLocale, id, data, filePath } = Astro.props;
 
 const { title, description, ...props } = data;
 ---
 
 <li class="my-6">
   <a
-    href={getPath(id, filePath)}
+    href={getPath(id, filePath, true, lang)}
     class:list={[
       "inline-block text-lg font-medium text-accent",
       "decoration-dashed underline-offset-4 hover:underline",

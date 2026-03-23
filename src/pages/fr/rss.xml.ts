@@ -7,13 +7,13 @@ import { t } from "@/i18n/translations";
 
 export async function GET() {
   const posts = await getCollection("blog");
-  const sortedPosts = getSortedPosts(posts, "en");
+  const sortedPosts = getSortedPosts(posts, "fr");
   return rss({
-    title: t("en", "rss.title"),
-    description: t("en", "rss.desc"),
+    title: t("fr", "rss.title"),
+    description: t("fr", "rss.desc"),
     site: SITE.website,
     items: sortedPosts.map(({ data, id, filePath }) => ({
-      link: getPath(id, filePath, true, "en"),
+      link: getPath(id, filePath, true, "fr"),
       title: data.title,
       description: data.description,
       pubDate: new Date(data.modDatetime ?? data.pubDatetime),

@@ -1,18 +1,21 @@
 ---
 import IconHash from "@/assets/icons/IconHash.svg";
+import { type Locale, defaultLocale } from "@/i18n/translations";
+import { getLocalizedPath } from "@/i18n/utils";
 
 type Props = {
   tag: string;
   tagName: string;
   size?: "sm" | "lg";
+  lang?: Locale;
 };
 
-const { tag, tagName, size = "lg" } = Astro.props;
+const { tag, tagName, size = "lg", lang = defaultLocale } = Astro.props;
 ---
 
 <li>
   <a
-    href={`/tags/${tag}/`}
+    href={getLocalizedPath(`/tags/${tag}/`, lang)}
     transition:name={tag}
     class:list={[
       "flex items-center gap-0.5",

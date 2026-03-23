@@ -10,7 +10,7 @@ export async function getStaticPaths() {
   }
 
   const posts = await getCollection("blog").then(p =>
-    p.filter(({ data }) => !data.draft && !data.ogImage && data.lang === "en")
+    p.filter(({ data }) => !data.draft && !data.ogImage && data.lang === "fr")
   );
 
   return posts.map(post => ({

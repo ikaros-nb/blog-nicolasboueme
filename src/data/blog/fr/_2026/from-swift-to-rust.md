@@ -7,6 +7,7 @@ tags:
   - Swift
   - Rust
 description: "Retour d'expérience sur mon apprentissage des bases de Rust."
+lang: "fr"
 ---
 
 ## 1. Introduction

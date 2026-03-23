@@ -12,14 +12,14 @@ import getPostsByTag from "@/utils/getPostsByTag";
 import { SITE } from "@/config";
 import { t } from "@/i18n/translations";
 
-const lang = "en" as const;
+const lang = "fr" as const;
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getCollection("blog");
-  const tags = getUniqueTags(posts, "en");
+  const tags = getUniqueTags(posts, "fr");
 
   return tags.flatMap(({ tag, tagName }) => {
-    const tagPosts = getPostsByTag(posts, tag, "en");
+    const tagPosts = getPostsByTag(posts, tag, "fr");
 
     return paginate(tagPosts, {
       params: { tag },
