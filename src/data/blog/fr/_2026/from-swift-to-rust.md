@@ -1,5 +1,5 @@
 ---
-pubDatetime: 2026-03-23T08:54:19.693Z
+pubDatetime: 2026-03-23T02:38:00.000Z
 title: De Swift à Rust
 slug: fr-from-swift-to-rust
 featured: false
