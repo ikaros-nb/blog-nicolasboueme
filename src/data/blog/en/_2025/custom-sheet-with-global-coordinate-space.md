@@ -1,7 +1,7 @@
 ---
 pubDatetime: 2025-08-15T12:00:00Z
-title: Créer une bottom sheet personnalisée et fluide avec coordinateSpace(.global) en SwiftUI
-slug: fr-custom-sheet-with-global-coordinate-space
+title: Building a smooth custom bottom sheet with coordinateSpace(.global) in SwiftUI
+slug: custom-sheet-with-global-coordinate-space
 featured: false
 draft: false
 tags:
@@ -10,26 +10,26 @@ tags:
   - gesture
   - animation
 description:
-  Comment implémenter une bottom sheet custom avec une gesture fluide.
-lang: "fr"
+  How to implement a custom bottom sheet with a smooth drag gesture.
+lang: "en"
 translationKey: "custom-sheet-with-global-coordinate-space"
 ---
 
-Pour ce premier article, je voudrais partager un problème récent, auquel j'ai été confronté, lié à une mauvaise compréhension de l’API `DragGesture(coordinateSpace:)` en SwiftUI.
+For this first article, I'd like to share a recent issue I ran into, caused by a misunderstanding of the `DragGesture(coordinateSpace:)` API in SwiftUI.
 
-## Le contexte
+## Context
 
-Dans mon application, j'avais besoin d'implémenter une bottom sheet avec les contraintes suivantes :
+In my app, I needed to implement a bottom sheet with the following constraints:
 
-- Apparition sans animation dès l'affichage de la vue parente.
-- Pas d'arrière-plan opaque.
-- Deux positions fixes : repliée (par défaut) et étendue.
-- Positions calculées dynamiquement.
-- Le contenu de la bottom sheet s’adapte à la hauteur disponible.
+- Appears without animation as soon as the parent view is displayed.
+- No opaque background.
+- Two fixed positions: collapsed (default) and expanded.
+- Positions computed dynamically.
+- The bottom sheet content adapts to the available height.
 
-## Première implémentation
+## First implementation
 
-J'ai créé une structure `DraggableBottomSheet` avec `DragGesture()` et des positions fixes.
+I created a `DraggableBottomSheet` struct using `DragGesture()` and fixed positions.
 
 <details class="details-block">
 <summary>DraggableBottomSheet.swift</summary>
@@ -39,11 +39,11 @@ struct DraggableBottomSheet<Content: View>: View {
     let minHeight: CGFloat
     let maxHeight: CGFloat
     let content: Content
-    
+
     @State private var height: CGFloat = 0
     @State private var dragStartHeight: CGFloat = 0
     private var backgroundColor: Color = .white
-    
+
     init(
         minHeight: CGFloat,
         maxHeight: CGFloat,
@@ -65,7 +65,7 @@ struct DraggableBottomSheet<Content: View>: View {
                             if dragStartHeight == 0 {
                                 dragStartHeight = height
                             }
-                            
+
                             // Apply drag with a 50px overshoot allowance
                             let proposedHeight = dragStartHeight - value.translation.height
                             let lowerBound = minHeight - 50
@@ -89,7 +89,7 @@ struct DraggableBottomSheet<Content: View>: View {
                             dragStartHeight = 0
                         }
                 )
-            
+
             let computedHeight = height - dragIndicatorBlocHeight
             if computedHeight > 0 {
                 content
@@ -113,16 +113,16 @@ struct DraggableBottomSheet<Content: View>: View {
             }
         }
     }
-    
+
     // MARK: - Drag Indicator
-    
+
     private let dragIndicatorSize: CGSize = CGSize(width: 64, height: 6)
     private let dragIndicatorTopPadding: CGFloat = 8
     private let dragIndicatorBottomPadding: CGFloat = 10
     private var dragIndicatorBlocHeight: CGFloat {
         dragIndicatorSize.height + dragIndicatorTopPadding + dragIndicatorBottomPadding
     }
-    
+
     private func dragIndicator() -> some View {
         Color.gray.opacity(0.5)
             .frame(
@@ -146,7 +146,7 @@ struct ContentView: View {
     var body: some View {
             ZStack(alignment: .top) {
                 topContent()
-                
+
                 VStack {
                     Spacer()
                     DraggableBottomSheet(
@@ -160,7 +160,7 @@ struct ContentView: View {
             .background(Color.gray.opacity(0.1))
             .ignoresSafeArea(.all, edges: .bottom)
     }
-    
+
     private func topContent() -> some View {
         VStack(spacing: 0) {
             Color.white
@@ -171,7 +171,7 @@ struct ContentView: View {
                 .frame(height: 100)
         }
     }
-    
+
     private func sheetContent() -> some View {
         ScrollView {
             LazyVStack(spacing: 0) {
@@ -188,39 +188,39 @@ struct ContentView: View {
 ```
 </details>
 
-## Le problème : tremblements lors du drag
+## The problem: jittering during drag
 
-La bottom sheet tremblait dès que je la tirais.
+The bottom sheet was shaking as soon as I dragged it.
 
 <video autoplay loop muted playsinline controls class="video-center">
     <source src="/assets/bottom-sheet-local.webm" type="video/webm">
 </video>
 
-## La solution : `coordinateSpace(.global)`
+## The fix: `coordinateSpace(.global)`
 
-Après quelques recherches, j’ai découvert que l’utilisation de `DragGesture(coordinateSpace: .global)` suffisait à résoudre le problème.
+After some digging, I found that using `DragGesture(coordinateSpace: .global)` was enough to solve the issue.
 
-Dans `DraggableBottomSheet.swift`, remplacer :
+In `DraggableBottomSheet.swift`, replace:
 
 ```swift
 DragGesture()
 ```
 
-Par :
+With:
 
 ```swift
 DragGesture(coordinateSpace: .global)
 ```
 
-Résultat :
+Result:
 
 <video autoplay loop muted playsinline controls class="video-center">
     <source src="/assets/bottom-sheet-global-fix.webm" type="video/webm">
 </video>
 
-## Comprendre la différence
+## Understanding the difference
 
-### Documentation Apple
+### Apple documentation
 
 ```swift
 public enum CoordinateSpace {
@@ -236,11 +236,11 @@ public enum CoordinateSpace {
 }
 ```
 
-À première vue, c’est un peu abstrait.
+At first glance, it's a bit abstract.
 
-### Analyse
+### Analysis
 
-En ajoutant un print dans `.onChanged` :
+By adding a print in `.onChanged`:
 
 ```swift
 .onChanged { value in
@@ -249,7 +249,7 @@ En ajoutant un print dans `.onChanged` :
 }
 ```
 
-Avec `.local` (défaut) :
+With `.local` (default):
 
 ```swift
 Dragging: 0.0
@@ -264,7 +264,7 @@ Dragging: -2.3333333333333144
 Dragging: 6.999989827473996
 ```
 
-Avec `.global` :
+With `.global`:
 
 ```swift
 Dragging: 506.6666564941406
@@ -279,31 +279,31 @@ Dragging: 497.0
 Dragging: 495.3333282470703
 ```
 
-La différence clé est la suivante :
+The key difference is:
 
-- `.local` : Les coordonnées sont mesurées par rapport à la vue en mouvement. La référence change à chaque frame, créant des "sauts" dans les valeurs.
-- `.global` : Les coordonnées sont mesurées par rapport à l’écran. La référence reste fixe, les valeurs sont stables.
+- `.local`: Coordinates are measured relative to the moving view. The reference point shifts every frame, creating "jumps" in the values.
+- `.global`: Coordinates are measured relative to the screen. The reference stays fixed, values are stable.
 
-On peut donc vérifier facilement : avec `.global`, `value.location.y` est relatif à l’écran, tandis qu’avec `.local`, il est relatif à la vue elle-même.
+Easy way to verify: with `.global`, `value.location.y` is relative to the screen, while with `.local`, it's relative to the view itself.
 
-## Bonus : positions dynamiques
+## Bonus: dynamic positions
 
-Calculer dynamiquement les positions min/max :
+Computing min/max positions dynamically:
 
-1. Ajouter les propriétés `topContentHeight` et `whiteContentHeight`.
+1. Add the `topContentHeight` and `whiteContentHeight` properties.
 
 ```swift
 @State private var topContentHeight: CGFloat = 0
 @State private var whiteContentHeight: CGFloat = 0
 ```
 
-2. Utiliser `GeometryReader`.
+2. Use `GeometryReader`.
 
 ```swift
 GeometryReader { geometry in
     ZStack(alignment: .top) {
         topContent()
-        
+
         VStack {
             Spacer()
             DraggableBottomSheet(
@@ -319,7 +319,7 @@ GeometryReader { geometry in
 .ignoresSafeArea(.all, edges: .bottom)
 ```
 
-3. Mesurer les hauteurs des blocs souhaités.
+3. Measure the heights of the desired blocks.
 
 ```swift
 private func topContent() -> some View {
@@ -342,10 +342,10 @@ private func topContent() -> some View {
 }
 ```
 
-Résultat final :
+Final result:
 
 <video autoplay loop muted playsinline controls class="video-center">
     <source src="/assets/bottom-sheet-global.webm" type="video/webm">
 </video>
 
-Vous pouvez accéder au code source via [ce lien](https://github.com/ikaros-nb/DraggableBottomSheet).
+You can access the source code [here](https://github.com/ikaros-nb/DraggableBottomSheet).

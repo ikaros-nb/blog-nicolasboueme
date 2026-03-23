@@ -1,11 +1,14 @@
 ---
 pubDatetime: 2026-03-23T08:54:19.693Z
 title: De Swift à Rust
-slug: de-swift-a-rust
+slug: fr-from-swift-to-rust
 featured: false
 tags:
   - Swift
   - Rust
+  - Solana
+  - blockchain
+  - learning
 description: "Retour d'expérience sur mon apprentissage des bases de Rust."
 lang: "fr"
 translationKey: "from-swift-to-rust"

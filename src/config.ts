@@ -4,7 +4,7 @@ export const SITE = {
   profile: "https://nicolasboueme.com/about",
   desc: "Blog of a French iOS developer in Japan. Swift, software craft, and life abroad.",
   title: "Nicolas Bouème",
-  ogImage: "astropaper-og.jpg",
+  ogImage: "",
   lightAndDarkMode: true,
   postPerIndex: 10,
   postPerPage: 10,

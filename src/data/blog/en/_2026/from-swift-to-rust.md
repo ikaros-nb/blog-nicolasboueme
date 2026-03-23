@@ -6,6 +6,9 @@ featured: false
 tags:
   - Swift
   - Rust
+  - Solana
+  - blockchain
+  - learning
 description: "A look back at my experience learning the basics of Rust."
 lang: "en"
 translationKey: "from-swift-to-rust"
