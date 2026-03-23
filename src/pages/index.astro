@@ -26,7 +26,7 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
   <Header {lang} />
   <main id="main-content" data-layout="index" class="app-layout">
     <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
+      <h1 class="my-2 inline-block text-2xl font-bold sm:my-4 sm:text-3xl">
         {t(lang, "home.greeting")}
       </h1>
       <a
@@ -46,15 +46,6 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 
       <p>
         {t(lang, "home.intro")}
-      </p>
-      <p class="mt-2">
-        {t(lang, "home.introMore")}
-        <LinkButton
-          class="underline decoration-dashed underline-offset-4 hover:text-accent"
-          href="https://github.com/satnaing/astro-paper#readme"
-        >
-          README
-        </LinkButton> {t(lang, "home.introMoreSuffix")}
       </p>
       {
         // only display if at least one social link is enabled

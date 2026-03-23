@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://nicolasboueme.com/",
   author: "Nicolas Bouème",
   profile: "https://nicolasboueme.com/about",
-  desc: "A minimal, responsive and SEO-friendly Astro blog theme.",
+  desc: "Blog of a French iOS developer in Japan. Swift, software craft, and life abroad.",
   title: "Nicolas Bouème",
   ogImage: "astropaper-og.jpg",
   lightAndDarkMode: true,

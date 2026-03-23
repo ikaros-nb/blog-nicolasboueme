@@ -61,11 +61,9 @@ const translations: Record<Locale, Record<string, string>> = {
     "share.label": "Share this post on:",
 
     // Homepage
-    "home.greeting": "Mingalaba",
+    "home.greeting": "Nicolas",
     "home.intro":
-      "AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro blog theme. This theme follows best practices and provides accessibility out of the box. Light and dark mode are supported by default. Moreover, additional color schemes can also be configured.",
-    "home.introMore": "Read the blog posts or check",
-    "home.introMoreSuffix": "for more info.",
+      "iOS developer based in Japan since August 2023.",
     "home.featured": "Featured",
     "home.recentPosts": "Recent Posts",
     "home.allPosts": "All Posts",
@@ -92,7 +90,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // RSS
     "rss.title": "Nicolas Bouème",
-    "rss.desc": "A minimal, responsive and SEO-friendly Astro blog theme.",
+    "rss.desc":
+      "Blog of a French iOS developer in Japan. Swift, software craft, and life abroad.",
   },
   fr: {
     // Header
@@ -151,11 +150,9 @@ const translations: Record<Locale, Record<string, string>> = {
     "share.label": "Partager cet article sur :",
 
     // Homepage
-    "home.greeting": "Mingalaba",
+    "home.greeting": "Nicolas",
     "home.intro":
-      "AstroPaper est un th\u00E8me de blog Astro minimal, responsive, accessible et optimis\u00E9 pour le SEO. Ce th\u00E8me suit les meilleures pratiques et fournit l'accessibilit\u00E9 d\u00E8s la sortie de la bo\u00EEte. Les modes clair et sombre sont pris en charge par d\u00E9faut. De plus, des sch\u00E9mas de couleurs suppl\u00E9mentaires peuvent \u00E9galement \u00EAtre configur\u00E9s.",
-    "home.introMore": "Lisez les articles de blog ou consultez",
-    "home.introMoreSuffix": "pour plus d'informations.",
+      "Développeur iOS basé au Japon depuis août 2023.",
     "home.featured": "En vedette",
     "home.recentPosts": "Articles r\u00E9cents",
     "home.allPosts": "Tous les articles",
@@ -182,8 +179,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // RSS
     "rss.title": "Nicolas Bouème",
-    "rss.desc":
-      "Un th\u00E8me de blog Astro minimal, responsive et optimis\u00E9 pour le SEO.",
+    "rss.desc": "Le blog d'un développeur iOS français au Japon.",
   },
 };
 
