@@ -175,7 +175,7 @@ const isActive = (path: string) => {
 
 <script>
   function toggleNav() {
-    const menuBtn = document.querySelector("#menu-btn");
+    const menuBtn = document.querySelector<HTMLElement>("#menu-btn");
     const menuItems = document.querySelector("#menu-items");
     const menuIcon = document.querySelector("#menu-icon");
     const closeIcon = document.querySelector("#close-icon");
@@ -188,13 +188,7 @@ const isActive = (path: string) => {
       menuBtn.setAttribute("aria-expanded", openMenu ? "false" : "true");
       menuBtn.setAttribute(
         "aria-label",
-        menuBtn.dataset.openLabel && menuBtn.dataset.closeLabel
-          ? openMenu
-            ? menuBtn.dataset.openLabel
-            : menuBtn.dataset.closeLabel
-          : openMenu
-            ? "Open Menu"
-            : "Close Menu"
+        openMenu ? "Open Menu" : "Close Menu"
       );
 
       menuItems.classList.toggle("hidden");

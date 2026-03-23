@@ -4,7 +4,6 @@ import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
 import { type Locale, defaultLocale } from "@/i18n/translations";
-import { getLocalizedPath } from "@/i18n/utils";
 import "@/styles/global.css";
 
 type Props = {
@@ -51,7 +50,6 @@ const structuredData = {
   ],
 };
 
-const otherLang: Locale = lang === "en" ? "fr" : "en";
 const rssPath = lang === defaultLocale ? "/rss.xml" : `/${lang}/rss.xml`;
 const enUrl = new URL(
   lang === "en" ? Astro.url.pathname : Astro.url.pathname.replace(/^\/fr/, "") || "/",
