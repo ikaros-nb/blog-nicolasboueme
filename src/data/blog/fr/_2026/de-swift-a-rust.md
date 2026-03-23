@@ -1,16 +1,17 @@
 ---
 pubDatetime: 2026-03-23T08:54:19.693Z
 title: De Swift à Rust
-slug: from-swift-to-rust
+slug: de-swift-a-rust
 featured: false
 tags:
   - Swift
   - Rust
 description: "Retour d'expérience sur mon apprentissage des bases de Rust."
 lang: "fr"
+translationKey: "from-swift-to-rust"
 ---
 
-## 1. Introduction
+## Introduction
 
 Ces derniers mois, j'ai ressenti le besoin d'apprendre quelque chose de nouveau. Utilisant beaucoup Claude Code au travail, je me suis dit qu'il m'était primordial de refaire travailler ma matière grise. N'ayant que des compétences en applications mobiles iOS, je me suis plusieurs fois par le passé dit que je devrais me mettre au développement backend, sans réelle ambition.
 
