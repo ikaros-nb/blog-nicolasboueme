@@ -91,7 +91,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "datetime.updated": "Updated:",
 
     // RSS
-    "rss.title": "AstroPaper",
+    "rss.title": "Nicolas Bouème",
     "rss.desc": "A minimal, responsive and SEO-friendly Astro blog theme.",
   },
   fr: {
@@ -181,7 +181,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "datetime.updated": "Mis \u00E0 jour :",
 
     // RSS
-    "rss.title": "AstroPaper",
+    "rss.title": "Nicolas Bouème",
     "rss.desc":
       "Un th\u00E8me de blog Astro minimal, responsive et optimis\u00E9 pour le SEO.",
   },

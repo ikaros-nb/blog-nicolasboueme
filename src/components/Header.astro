@@ -95,14 +95,18 @@ const isActive = (path: string) => {
             {t(lang, "nav.posts")}
           </a>
         </li>
-        <li class="col-span-2">
-          <a
-            href={getLocalizedPath("/tags", lang)}
-            class:list={{ "active-nav": isActive("/tags") }}
-          >
-            {t(lang, "nav.tags")}
-          </a>
-        </li>
+        {
+          SITE.showTags && (
+            <li class="col-span-2">
+              <a
+                href={getLocalizedPath("/tags", lang)}
+                class:list={{ "active-nav": isActive("/tags") }}
+              >
+                {t(lang, "nav.tags")}
+              </a>
+            </li>
+          )
+        }
         <li class="col-span-2">
           <a
             href={getLocalizedPath("/about", lang)}
