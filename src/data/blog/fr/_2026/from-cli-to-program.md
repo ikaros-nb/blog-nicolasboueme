@@ -1,6 +1,6 @@
 ---
 pubDatetime: 2026-04-16T00:05:00.000Z
-title: Apprendre Solana : de la CLI au program
+title: "Apprendre Solana : de la CLI au program"
 slug: fr-from-cli-to-program
 featured: false
 tags:
