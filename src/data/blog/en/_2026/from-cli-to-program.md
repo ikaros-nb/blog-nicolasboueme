@@ -1,5 +1,5 @@
 ---
-pubDatetime: 2026-04-16T00:05:00.000Z
+pubDatetime: 2026-04-15T12:00:00.000Z
 title: "Learning Solana: from CLI to program"
 slug: from-cli-to-program
 featured: false
