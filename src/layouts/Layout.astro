@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
+import Analytics from "@vercel/analytics/astro";
 import { SITE } from "@/config";
 import { type Locale, defaultLocale } from "@/i18n/translations";
 import "@/styles/global.css";
@@ -153,6 +154,8 @@ const frUrl = new URL(
         />
       )
     }
+
+    <Analytics />
 
     <ClientRouter />
 
