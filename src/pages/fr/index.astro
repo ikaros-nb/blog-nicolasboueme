@@ -10,6 +10,7 @@ import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { type Locale, getLocalizedPath } from "@/i18n/utils";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -39,7 +40,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
       </h1>
       <a
         target="_blank"
-        href={getRelativeLocaleUrl(locale, "rss.xml")}
+        href={getLocalizedPath("/rss.xml", locale as Locale)}
         class="inline-block"
         aria-label="RSS Feed"
         title="RSS Feed"
