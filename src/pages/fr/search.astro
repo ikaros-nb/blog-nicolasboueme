@@ -1,33 +1,49 @@
 ---
+import { getRelativeLocaleUrl } from "astro:i18n";
 import "@pagefind/default-ui/css/ui.css";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
-import { SITE } from "@/config";
-import { t } from "@/i18n/translations";
+import { getAssetPath } from "@/utils/withBase";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
 
-const lang = "fr" as const;
+const locale = Astro.currentLocale ?? config.site.lang;
 
-const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/fr/";
+// Redirect to 404 page if `search` feature is not enabled
+const notFoundUrl = getRelativeLocaleUrl(locale, "404");
+if (config.features.search !== "pagefind" && notFoundUrl) {
+  return Astro.rewrite(notFoundUrl);
+}
+
+const backUrl = config.features.showBackButton
+  ? `${Astro.url.pathname}`
+  : getRelativeLocaleUrl(locale, "");
+
+const pagefindBundlePath = getAssetPath("pagefind/");
+
+const t = useTranslations(locale);
 ---
 
-<Layout title={`${t(lang, "search.title")} | ${SITE.title}`} {lang}>
-  <Header {lang} />
-  <Main
-    pageTitle={t(lang, "search.title")}
-    pageDesc={t(lang, "search.desc")}
-    {lang}
-  >
+<Layout title={`${t.pages.searchTitle} | ${config.site.title}`}>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={t.pages.searchTitle} pageDesc={t.pages.searchDesc}>
     <div
       id="pagefind-search"
       transition:persist
       data-backurl={backUrl}
-      data-lang={lang}
+      data-bundle-path={pagefindBundlePath}
+      data-lang={locale}
     >
     </div>
   </Main>
-  <Footer {lang} />
+
+  <Footer />
 </Layout>
 
 <script>
@@ -37,8 +53,10 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/fr/";
 
     if (!pageFindSearch) return;
 
+    const bundlePath = pageFindSearch?.dataset?.bundlePath;
+    if (!bundlePath) return;
+
     const params = new URLSearchParams(window.location.search);
-    const searchLang = pageFindSearch.dataset.lang || "en";
 
     const onIdle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
 
@@ -46,38 +64,44 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/fr/";
       // @ts-expect-error — Missing types for @pagefind/default-ui package.
       const { PagefindUI } = await import("@pagefind/default-ui");
 
-      // Display warning in dev mode
+      // Display warning inn dev mode
       if (import.meta.env.DEV) {
         pageFindSearch.innerHTML = `
             <div class="bg-muted/75 rounded p-4 space-y-4 mb-4">
-              <p><strong>Attention mode DEV ! </strong>Vous devez builder le projet au moins une fois pour voir les résultats de recherche en développement.</p>
+              <p><strong>DEV mode Warning! </strong>You need to build the project at least once to see the search results during development.</p>
               <code class="block bg-black text-white px-2 py-1 rounded">pnpm run build</code>
             </div>
           `;
       }
 
-      // Init pagefind ui with language filtering
+      const searchLang = pageFindSearch?.dataset?.lang;
+
+      // Init pagefind ui
       const search = new PagefindUI({
         element: "#pagefind-search",
+        bundlePath,
         showImages: false,
         showSubResults: true,
-        filters: { lang: [searchLang] },
+        ...(searchLang && { filters: { lang: [searchLang] } }),
         processTerm: function (term: string) {
-          params.set("q", term);
-          history.replaceState(history.state, "", "?" + params.toString());
+          params.set("q", term); // Update the `q` parameter in the URL
+          history.replaceState(history.state, "", "?" + params.toString()); // Push the new URL without reloading
 
-          const backUrl = pageFindSearch?.dataset?.backurl;
-          sessionStorage.setItem("backUrl", backUrl + "?" + params.toString());
+          const backUrl =
+            pageFindSearch?.dataset?.backurl ?? window.location.pathname;
+          sessionStorage.setItem("backUrl", `${backUrl}?${params.toString()}`);
 
           return term;
         },
       });
 
+      // If search param exists (eg: search?q=astro), trigger search
       const query = params.get("q");
       if (query) {
         search.triggerSearch(query);
       }
 
+      // Reset search param if search input is cleared
       const searchInput = document.querySelector(".pagefind-ui__search-input");
       const clearButton = document.querySelector(".pagefind-ui__search-clear");
       searchInput?.addEventListener("input", resetSearchParam);
@@ -93,7 +117,10 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : "/fr/";
 
   document.addEventListener("astro:after-swap", () => {
     const pagefindSearch = document.querySelector("#pagefind-search");
+
+    // if pagefind search form already exists, don't initialize search component
     if (pagefindSearch && pagefindSearch.querySelector("form")) return;
+
     initSearch();
   });
   initSearch();
