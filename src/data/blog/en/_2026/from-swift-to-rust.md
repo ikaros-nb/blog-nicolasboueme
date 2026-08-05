@@ -45,7 +45,7 @@ enum Transaction {
     case failed(reason: String)
 }
 
-let tx = Transaction.transfer(from: "Lancelot", to: "Siegfried", amount: 1.5)
+let tx = Transaction.transfer(from: "Alice", to: "Bob", amount: 1.5)
 
 switch tx {
 case .transfer(_, _, let amount) where amount > 1.0:
@@ -66,8 +66,8 @@ enum Transaction {
 }
 
 let tx = Transaction::Transfer {
-    from: "Lancelot".to_string(),
-    to: "Siegfried".to_string(),
+    from: "Alice".to_string(),
+    to: "Bob".to_string(),
     amount: 1.5,
 };
 
