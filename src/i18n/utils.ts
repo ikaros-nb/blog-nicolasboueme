@@ -1,5 +1,7 @@
-import type { CollectionEntry } from "astro:content";
-import { type Locale, defaultLocale } from "./translations";
+export type Locale = "en" | "fr";
+
+export const defaultLocale: Locale = "en";
+export const locales: Locale[] = ["en", "fr"];
 
 /**
  * Extract locale from a URL pathname.
@@ -21,14 +23,4 @@ export function getLocalizedPath(path: string, lang: Locale): string {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   if (lang === defaultLocale) return cleanPath;
   return `/${lang}${cleanPath}`;
-}
-
-/**
- * Filter posts by language.
- */
-export function filterPostsByLang(
-  posts: CollectionEntry<"blog">[],
-  lang: Locale
-): CollectionEntry<"blog">[] {
-  return posts.filter(post => post.data.lang === lang);
 }

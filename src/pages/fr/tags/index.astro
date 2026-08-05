@@ -1,31 +1,32 @@
 ---
 import { getCollection } from "astro:content";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
-import Tag from "@/components/Tag.astro";
 import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
-import getUniqueTags from "@/utils/getUniqueTags";
-import { SITE } from "@/config";
-import { t } from "@/i18n/translations";
+import Tag from "@/components/Tag.astro";
+import { getUniqueTags } from "@/utils/getUniqueTags";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
 
-const lang = "fr" as const;
+const posts = await getCollection("posts", ({ data }) => !data.draft);
+const tags = getUniqueTags(posts, "fr");
 
-const posts = await getCollection("blog");
-
-let tags = getUniqueTags(posts, lang);
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
 ---
 
-<Layout title={`${t(lang, "tags.title")} | ${SITE.title}`} {lang}>
-  <Header {lang} />
-  <Main
-    pageTitle={t(lang, "tags.title")}
-    pageDesc={t(lang, "tags.desc")}
-    {lang}
-  >
+<Layout title={`${t.pages.tagsTitle} | ${config.site.title}`}>
+  <Header />
+
+  <Breadcrumb />
+
+  <Main pageTitle={t.pages.tagsTitle} pageDesc={t.pages.tagsDesc}>
     <ul class="flex flex-wrap gap-6">
-      {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} {lang} />)}
+      {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} />)}
     </ul>
   </Main>
-  <Footer {lang} />
+
+  <Footer />
 </Layout>

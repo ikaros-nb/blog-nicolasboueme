@@ -1,54 +1,60 @@
 ---
 import { getCollection } from "astro:content";
 import type { GetStaticPathsOptions } from "astro";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
+import Main from "@/components/Main.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
 import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
-import getUniqueTags from "@/utils/getUniqueTags";
-import getPostsByTag from "@/utils/getPostsByTag";
-import { SITE } from "@/config";
-import { t } from "@/i18n/translations";
-
-const lang = "fr" as const;
+import { getUniqueTags } from "@/utils/getUniqueTags";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { slugifyAll } from "@/utils/slugify";
+import { tplStr, useTranslations } from "@/i18n";
+import config from "@/config";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
-  const posts = await getCollection("blog");
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
   const tags = getUniqueTags(posts, "fr");
 
   return tags.flatMap(({ tag, tagName }) => {
-    const tagPosts = getPostsByTag(posts, tag, "fr");
+    const tagPosts = getSortedPosts(
+      posts.filter(({ data }) => slugifyAll(data.tags).includes(tag)),
+      "fr"
+    );
 
     return paginate(tagPosts, {
       params: { tag },
       props: { tagName },
-      pageSize: SITE.postPerPage,
+      pageSize: config.posts.perPage,
     });
   });
 }
 
-const params = Astro.params;
-const { tag } = params;
 const { page, tagName } = Astro.props;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
 ---
 
-<Layout title={`${t(lang, "tags.tagPrefix")} ${tagName} | ${SITE.title}`} {lang}>
-  <Header {lang} />
+<Layout
+  title={`${tplStr(t.pages.tagTitle, { tag: tagName })} | ${config.site.title}`}
+>
+  <Header />
+
+  <Breadcrumb />
+
   <Main
-    pageTitle={[`${t(lang, "tags.tagPrefix")}`, `${tagName}`]}
-    titleTransition={tag}
-    pageDesc={t(lang, "tags.tagDesc").replace("{tagName}", tagName)}
-    {lang}
+    pageTitle={tplStr(t.pages.tagTitle, { tag: tagName })}
+    pageDesc={tplStr(t.pages.tagDesc, { tag: tagName })}
   >
-    <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
     <ul>
-      {page.data.map(data => <Card {lang} {...data} />)}
+      {page.data.map(data => <Card {...data} />)}
     </ul>
   </Main>
 
-  <Pagination {page} {lang} />
+  <Pagination {page} />
 
-  <Footer noMarginTop={page.lastPage > 1} {lang} />
+  <Footer noMarginTop={page.lastPage > 1} />
 </Layout>

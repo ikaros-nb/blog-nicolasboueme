@@ -1,16 +1,18 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { type Locale, defaultLocale } from "@/i18n/translations";
-import { getLocalizedPath } from "@/i18n/utils";
-import { getPath } from "@/utils/getPath";
+import { type Locale, getLocalizedPath } from "@/i18n/utils";
+import { stripBase, stripLocale } from "@/utils/withBase";
+import { getPostUrl } from "@/utils/getPostPaths";
+import config from "@/config";
 
 type Props = {
-  lang?: Locale;
-  post?: CollectionEntry<"blog">;
-  allPosts?: CollectionEntry<"blog">[];
+  post?: CollectionEntry<"posts">;
+  allPosts?: CollectionEntry<"posts">[];
 };
 
-const { lang = defaultLocale, post, allPosts } = Astro.props;
+const { post, allPosts } = Astro.props;
+
+const lang = (Astro.currentLocale ?? config.site.lang) as Locale;
 const otherLang: Locale = lang === "en" ? "fr" : "en";
 
 let switchHref: string;
@@ -23,7 +25,7 @@ if (post && allPosts && post.data.translationKey) {
       p.data.lang === otherLang
   );
   if (translation) {
-    switchHref = getPath(translation.id, translation.filePath, true, otherLang);
+    switchHref = getPostUrl(translation.id, translation.filePath, otherLang);
   } else {
     // No translation found, link to posts list
     switchHref = getLocalizedPath("/posts/", otherLang);
@@ -33,14 +35,10 @@ if (post && allPosts && post.data.translationKey) {
   switchHref = getLocalizedPath("/posts/", otherLang);
 } else {
   // On any other page, swap the language prefix
-  let currentPath = Astro.url.pathname;
+  let currentPath = stripLocale(stripBase(Astro.url.pathname), lang);
   // Remove trailing slash
   if (currentPath.endsWith("/") && currentPath !== "/") {
     currentPath = currentPath.slice(0, -1);
-  }
-  // Strip current lang prefix if present
-  if (lang !== defaultLocale) {
-    currentPath = currentPath.replace(new RegExp(`^/${lang}`), "") || "/";
   }
   switchHref = getLocalizedPath(currentPath, otherLang);
 }
@@ -50,8 +48,8 @@ const label = otherLang.toUpperCase();
 
 <a
   href={switchHref}
-  class="focus-outline p-3 text-sm font-semibold sm:p-1 hover:text-accent"
-  aria-label={`Switch to ${otherLang === "en" ? "English" : "Fran\u00E7ais"}`}
+  class="focus-outline p-3 text-sm font-semibold hover:text-accent sm:p-1"
+  aria-label={`Switch to ${otherLang === "en" ? "English" : "Français"}`}
 >
   {label}
 </a>
