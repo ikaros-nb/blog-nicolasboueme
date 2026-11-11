@@ -2,7 +2,6 @@ import { defineConfig, envField, fontProviders } from "astro/config";
 import { unified } from "@astrojs/markdown-remark";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
-import vercel from "@astrojs/vercel";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import rehypeCallouts from "rehype-callouts";
@@ -17,7 +16,6 @@ import config from "./astro-paper.config";
 // https://astro.build/config
 export default defineConfig({
   site: config.site.url,
-  adapter: vercel(),
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr"],

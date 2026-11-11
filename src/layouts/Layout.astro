@@ -1,11 +1,11 @@
 ---
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
-import Analytics from "@vercel/analytics/astro";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
 import { type Locale, getLocalizedPath } from "@/i18n/utils";
 import config from "@/config";
+import { umamiWebsiteId } from "@/umami";
 import "@/styles/global.css";
 
 type Props = {
@@ -112,7 +112,34 @@ const frUrl = new URL(
       )
     }
 
-    <Analytics />
+    <!--
+      Umami, served from the blog by worker/index.ts. data-domains keeps the dev
+      server and previews out of the statistics. The search page writes each
+      term into the address (?q=), which the tracker would count as a new page
+      view: umamiBeforeSend drops a page view whose path hasn't changed.
+    -->
+    <script is:inline>
+      (function () {
+        let lastPath;
+        window.umamiBeforeSend = function (type, payload) {
+          if (type !== "event" || payload.name) return payload;
+          const path = new URL(payload.url, location.origin).pathname;
+          if (path === lastPath) return false;
+          lastPath = path;
+          return payload;
+        };
+      })();
+    </script>
+    <script
+      is:inline
+      defer
+      src="/stats/script.js"
+      data-website-id={umamiWebsiteId}
+      data-domains="nicolasboueme.com,www.nicolasboueme.com"
+      data-before-send="umamiBeforeSend"></script>
+    <script>
+      import "@/scripts/analytics";
+    </script>
 
     <!--
       Inline FOUC-prevention script: sets data-theme on <html> before

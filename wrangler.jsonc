@@ -1,0 +1,19 @@
+// The blog is a Worker that serves the static files of dist, which Astro and Pagefind build, with public/_headers.
+// worker/index.ts answers first for /stats/*: Umami's tracker and its events, from the blog's own address.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // The name of the Worker in Cloudflare's dashboard.
+  "name": "blog-nicolasboueme",
+  "compatibility_date": "2026-10-13",
+  // Wrangler sends anonymous usage statistics unless told not to.
+  "send_metrics": false,
+  "main": "./worker/index.ts",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/stats/*"],
+    // Astro writes each page to a folder's index.html: /posts/foo answers by redirecting to /posts/foo/.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

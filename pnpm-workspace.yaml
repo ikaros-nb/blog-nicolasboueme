@@ -1,0 +1,7 @@
+# pnpm settings of the blog.
+
+# No install script for these: those of esbuild and workerd, which wrangler uses, only check their binary,
+# which comes from their platform package.
+allowBuilds:
+  esbuild: false
+  workerd: false

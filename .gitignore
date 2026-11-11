@@ -27,5 +27,5 @@ pnpm-debug.log*
 # pagefind
 
 public/pagefind
-# vercel adapter output
-.vercel/
+# wrangler dev state
+.wrangler/

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build && pagefind --site dist && cp -r dist/pagefind public/",
-    "preview": "astro preview",
+    "preview": "pnpm run build && wrangler dev",
     "sync": "astro sync",
     "astro": "astro",
     "format:check": "prettier --check .",
@@ -16,9 +16,7 @@
     "@astrojs/markdown-remark": "^7.2.2",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^11.0.4",
     "@tailwindcss/vite": "^4.3.3",
-    "@vercel/analytics": "^2.0.1",
     "astro": "^7.1.6",
     "dayjs": "^1.11.21",
     "lodash.kebabcase": "^4.1.1",
@@ -45,6 +43,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.66.0"
+    "typescript-eslint": "^8.66.0",
+    "wrangler": "4.149.0"
   }
 }
