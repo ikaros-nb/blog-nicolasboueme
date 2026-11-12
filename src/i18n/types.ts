@@ -40,6 +40,7 @@ export interface UIStrings {
   footer: {
     copyright: string;
     allRightsReserved: string;
+    privacy: string;
   };
   pages: {
     /** Template: use with tplStr and a {{tag}} variable. */

@@ -2,6 +2,8 @@
 import type { HTMLAttributes } from "astro/types";
 import Socials from "./Socials.astro";
 import { useTranslations } from "@/i18n";
+import { type Locale, getLocalizedPath } from "@/i18n/utils";
+import config from "@/config";
 
 type Props = {
   noMarginTop?: boolean;
@@ -11,6 +13,10 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 
 const t = useTranslations(Astro.currentLocale);
 const currentYear = new Date().getFullYear();
+const privacyHref = getLocalizedPath(
+  "/privacy/",
+  (Astro.currentLocale ?? config.site.lang) as Locale
+);
 ---
 
 <footer
@@ -25,6 +31,13 @@ const currentYear = new Date().getFullYear();
       <span>{t.footer.copyright} &#169; {currentYear}</span>
       <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
       <span>{t.footer.allRightsReserved}</span>
+      <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
+      <a
+        href={privacyHref}
+        class="underline-offset-4 hover:text-accent hover:underline"
+      >
+        {t.footer.privacy}
+      </a>
     </div>
   </div>
 </footer>
